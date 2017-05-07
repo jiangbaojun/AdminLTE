@@ -441,6 +441,54 @@ function _init() {
       });
   };
 
+  /* createMenus()
+   * ======
+   * create tree view DOMElements.
+   * @param target  menu parent jqueryDomObject（菜单根节点jquery对象）
+   * @param data   menu data（菜单数据）
+   * @param id    root id of menu data（菜单数据根节点id）
+   * @param j    use to class of menu level num （用于class名称，表示每级菜单的level。该参数定义初始级别，然后累加）
+   * @type Function
+   * @Usage: $.AdminLTE.createMenus(data)
+   * @user: baojun.jiang
+   */
+  $.AdminLTE.createMenus = function (target, data, id, j) {
+    var _this = this;
+    var rootMenu = $.grep(data, function (n) {
+      if (n.parentId == id)
+        return true;
+    });
+    if(!rootMenu.length) return;
+    //sort(排序)
+    rootMenu.sort(function (a, b) {
+      return a.orderNum - b.orderNum;
+    });
+    //add menu node（插入同级菜单节点）
+    $.each(rootMenu, function (i) {
+      var that = this;
+      var li = $('<li />').addClass("treeview").appendTo(target);
+      var li_a = $('<a/>').attr({"href": this.url || "#", "menuId": this.id})
+          .addClass(this.url == '' ? '' : 'menu-item')
+          .appendTo(li);
+      // iconCls
+      $('<i/>').addClass(this.iconClass || "").appendTo(li_a);
+      // title
+      $('<span class="menu-text" />').text(this.title).appendTo(li_a);
+
+      var childrenUL = $('<ul class="treeview-menu" />');
+      _this.createMenus(childrenUL, data, that.id, j+1);
+      if(childrenUL.children().length){
+        childrenUL.addClass('treeview-level-'+j);
+        childrenUL.appendTo(li);
+        li_a.attr('href','#');
+        li_a.removeClass('menu-item');
+        //arrows
+        var arrow=$('<span class="pull-right-container" />').appendTo(li_a);
+        $('<i class="fa fa-angle-left pull-right" />').appendTo(arrow);
+      }
+    });
+  }
+
   /* ControlSidebar
    * ==============
    * Adds functionality to the right sidebar
