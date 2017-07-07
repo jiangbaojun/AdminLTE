@@ -57,8 +57,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
           menuContainer:$("#sidebarMenu"),
           menuRootId:0,
           menuStartIndex:1
-        }
-      });
+        },
+        breadcrumbContainer:$("#breadcrumb")
+      },true);
     });
 
   </script>
@@ -295,10 +296,8 @@ desired effect
         Page Header
         <small>Optional description</small>
       </h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-        <li class="active">Here</li>
-      </ol>
+      <!--面包屑container-->
+      <ol id="breadcrumb" class="breadcrumb"></ol>
     </section>
 
     <!-- 主页面 -->

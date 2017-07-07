@@ -44,6 +44,8 @@ $.AdminLTE.options = {
     //menu start index number
     menuStartIndex:1
   },
+  //breadcrumb container
+  breadcrumbContainer:$("#breadCrumb"),
   //Add slimscroll to navbar menus
   //This requires you to load the slimscroll plugin
   //in every page before app.js
@@ -252,8 +254,9 @@ function _init() {
    * ======
    * 扩展数据.
    * @param AdminLTEOptions 待扩展的数据
+   * @param isImmediate 是否即时生效
    */
-  $.AdminLTE.extendData = function (AdminLTEOptions) {
+  $.AdminLTE.extendData = function (AdminLTEOptions,isImmediate) {
     //上一次menuContainer
     var oldMenuContainer=$.AdminLTE.options.sideBarMenu.menuContainer;
     //扩展数据
@@ -262,12 +265,14 @@ function _init() {
           $.AdminLTE.options,
           AdminLTEOptions);
     }
-    // 如果扩展菜单数据，重新渲染菜单
-    if(AdminLTEOptions!=null && AdminLTEOptions!=undefined && AdminLTEOptions.sideBarMenu){
-      var o = $.AdminLTE.options;
-      oldMenuContainer.html("");
-      //create sidebar menus
-      $.AdminLTE.createMenus(o.sideBarMenu.menuContainer,o.sideBarMenu.menuRootId,o.sideBarMenu.menuStartIndex);
+    if(isImmediate){
+      // 如果扩展菜单数据，重新渲染菜单
+      if(AdminLTEOptions!=null && AdminLTEOptions!=undefined && AdminLTEOptions.sideBarMenu){
+        var o = $.AdminLTE.options;
+        oldMenuContainer.html("");
+        //create sidebar menus
+        $.AdminLTE.createMenus(o.sideBarMenu.menuContainer,o.sideBarMenu.menuRootId,o.sideBarMenu.menuStartIndex);
+      }
     }
   }
 
@@ -318,9 +323,51 @@ function _init() {
         //arrows
         var arrow=$('<span class="pull-right-container" />').appendTo(li_a);
         $('<i class="fa fa-angle-left pull-right" />').appendTo(arrow);
+      }else{
+        //最底层（没有子节点）菜单选项添加事件
+        li.on('click', function (e) {
+          var breadcrumbContainer=$.AdminLTE.options.breadcrumbContainer;
+          $.AdminLTE.breadcrumb.createBreadcrumb(breadcrumbContainer,that.parentId,that.title);
+          e.preventDefault();
+        });
       }
     });
   }
+
+  /**
+   * 创建面包屑
+   * AdminLTE breadcrumb
+   * @type Object
+   * @usage   createBreadcrumb: $.AdminLTE.utils.createBreadcrumb,
+   *           getMiddleBreadcrumb: $.AdminLTE.utils.getMiddleBreadcrumb
+   *
+   */
+  $.AdminLTE.breadcrumb = {
+    /**
+     * 创建面包屑
+     * @param target 面包屑container
+     * @param pid 当前节点（最后一层）的parentId
+     * @param title 当前节点（最后一层）的title
+     */
+    createBreadcrumb: function (target, pid, title) {
+      var _this = this;
+      target.html("");
+      _this.getMiddleBreadcrumb(target, pid);
+      target.prepend('<li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>');
+      target.append('<li class="active">'+title+'</li>');
+    },
+    getMiddleBreadcrumb: function (target, pid) {
+      var _this = this;
+      var data=$.AdminLTE.options.sideBarMenu.menuData;
+      for(var i=0;i<data.length;i++){
+        var item=data[i];
+        if(item.id==pid){
+          target.prepend('<li><a href="#">'+item.title+'</a></li>');
+          _this.getMiddleBreadcrumb(target,item.parentId);
+        }
+      }
+    }
+  };
 
   /* Layout
    * ======
