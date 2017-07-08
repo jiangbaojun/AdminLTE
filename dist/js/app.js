@@ -40,12 +40,14 @@ $.AdminLTE.options = {
     //jquery object of menu container
     menuContainer:$("#sidebarMenu"),
     //menu data root id
-    menuRootId:0,
-    //menu start index number
-    menuStartIndex:1
+    menuRootId:0
   },
   //breadcrumb container
   breadcrumbContainer:$("#breadCrumb"),
+  //breadcrumb home
+  breadcrumbHome: "main.html",
+  //mian content container
+  mainContent:$("#mainContent"),
   //Add slimscroll to navbar menus
   //This requires you to load the slimscroll plugin
   //in every page before app.js
@@ -172,7 +174,7 @@ $(function () {
   _init();
 
   //create sidebar menus
-  $.AdminLTE.createMenus(o.sideBarMenu.menuContainer,o.sideBarMenu.menuRootId,o.sideBarMenu.menuStartIndex);
+  $.AdminLTE.createMenus(o.sideBarMenu.menuContainer,o.sideBarMenu.menuRootId,1);
 
   //Activate the layout maker
   $.AdminLTE.layout.activate();
@@ -267,11 +269,11 @@ function _init() {
     }
     if(isImmediate){
       // 如果扩展菜单数据，重新渲染菜单
-      if(AdminLTEOptions!=null && AdminLTEOptions!=undefined && AdminLTEOptions.sideBarMenu){
+      if(AdminLTEOptions!=null && AdminLTEOptions!==undefined && AdminLTEOptions.sideBarMenu){
         var o = $.AdminLTE.options;
         oldMenuContainer.html("");
         //create sidebar menus
-        $.AdminLTE.createMenus(o.sideBarMenu.menuContainer,o.sideBarMenu.menuRootId,o.sideBarMenu.menuStartIndex);
+        $.AdminLTE.createMenus(o.sideBarMenu.menuContainer,o.sideBarMenu.menuRootId,1);
       }
     }
   }
@@ -287,7 +289,7 @@ function _init() {
    * @user: baojun.jiang
    */
   $.AdminLTE.createMenus = function (target, id, j) {
-    if(target==undefined||target==null){
+    if(target===undefined||target==null){
       return;
     }
     var _this = this;
@@ -302,11 +304,11 @@ function _init() {
       return a.orderNum - b.orderNum;
     });
     //add menu node（插入同级菜单节点）
-    $.each(rootMenu, function (i) {
+    $.each(rootMenu, function () {
       var that = this;
       var li = $('<li />').addClass("treeview").appendTo(target);
       var li_a = $('<a/>').attr({"href": this.url || "#", "menuId": this.id})
-          .addClass(this.url == '' ? '' : 'menu-item')
+          .addClass(this.url === '' ? '' : 'menu-item')
           .appendTo(li);
       // iconCls
       $('<i/>').addClass(this.iconClass || "").appendTo(li_a);
@@ -326,8 +328,14 @@ function _init() {
       }else{
         //最底层（没有子节点）菜单选项添加事件
         li.on('click', function (e) {
+          //预览标题
+          $("#viewTitle").text(that.title);
+          $("#viewSubTitle").text(that.subTitle);
           var breadcrumbContainer=$.AdminLTE.options.breadcrumbContainer;
+          //生成面包屑
           $.AdminLTE.breadcrumb.createBreadcrumb(breadcrumbContainer,that.parentId,that.title);
+          //替换maincontent
+          $.AdminLTE.options.mainContent.html('<iframe marginwidth="0" marginheight="0" id="mainContentIframe" name="mainContentIframe" class="main-content-frame" src="'+that.url+'"></iframe>');
           e.preventDefault();
         });
       }
@@ -353,7 +361,7 @@ function _init() {
       var _this = this;
       target.html("");
       _this.getMiddleBreadcrumb(target, pid);
-      target.prepend('<li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>');
+      target.prepend('<li><a href="'+$.AdminLTE.options.breadcrumbHome+'"><i class="fa fa-dashboard"></i>首页</a></li>');
       target.append('<li class="active">'+title+'</li>');
     },
     getMiddleBreadcrumb: function (target, pid) {
@@ -383,7 +391,7 @@ function _init() {
       var _this = this;
       _this.fix();
       _this.fixSidebar();
-      $('body, html, .wrapper').css('height', 'auto');
+      // $('body, html, .wrapper').css('height', 'auto');
       $(window, ".wrapper").resize(function () {
         _this.fix();
         _this.fixSidebar();
@@ -394,13 +402,16 @@ function _init() {
       $(".layout-boxed > .wrapper").css('overflow', 'hidden');
       //Get window height and the wrapper height
       var footer_height = $('.main-footer').outerHeight() || 0;
-      var neg = $('.main-header').outerHeight() + footer_height;
+      var content_header = $('.content-header').outerHeight() || 0;
+      var main_header = $('.main-header').outerHeight() || 0;
+      var neg = main_header + footer_height;
       var window_height = $(window).height();
       var sidebar_height = $(".sidebar").height() || 0;
       //Set the min-height of the content and sidebar based on the
       //the height of the document.
       if ($("body").hasClass("fixed")) {
-        $(".content-wrapper, .right-side").css('min-height', window_height - footer_height);
+        $(".content-wrapper, .right-side").css('min-height', window_height - footer_height - 1);
+        $(".content-wrapper .content, .content-wrapper .main-content-frame").css('min-height', window_height - footer_height - content_header - main_header - 35);
       } else {
         var postSetWidth;
         if (window_height >= sidebar_height) {
@@ -538,6 +549,9 @@ function _init() {
         //Get the clicked link and the next element
         var $this = $(this);
         var checkElement = $this.next();
+        //有没有子级菜单
+        var sonTreeMent = $this.siblings("ul.treeview-menu");
+        var hasSonTreeMenu=sonTreeMent!==undefined&&sonTreeMent.length==1;
 
         //Check if the next element is a menu and is visible
         if ((checkElement.is('.treeview-menu')) && (checkElement.is(':visible')) && (!$('body').hasClass('sidebar-collapse'))) {
@@ -550,28 +564,34 @@ function _init() {
           checkElement.parent("li").removeClass("active");
         }
         //If the menu is not visible
-        else if ((checkElement.is('.treeview-menu')) && (!checkElement.is(':visible'))) {
+        else if (((checkElement.is('.treeview-menu')) && (!checkElement.is(':visible'))) || !hasSonTreeMenu) {
           //Get the parent menu
           var parent = $this.parents('ul').first();
           //Close all open menus within the parent
           var ul = parent.find('ul:visible').slideUp(animationSpeed);
           //Remove the menu-open class from the parent
           ul.removeClass('menu-open');
+          //Open the target menu and add the menu-open class
+          if(checkElement!==undefined&&checkElement.length>0){
+            checkElement.slideDown(animationSpeed, function () {});
+          }
           //Get the parent li
           var parent_li = $this.parent("li");
-
-          //Open the target menu and add the menu-open class
-          checkElement.slideDown(animationSpeed, function () {
-            //Add the class active to the parent li
-            checkElement.addClass('menu-open');
-            parent.find('li.active').removeClass('active');
-            parent_li.addClass('active');
-            //Fix the layout in case the sidebar stretches over the height of the window
-            _this.layout.fix();
-          });
+          //Add the class active to the parent li
+          checkElement.addClass('menu-open');
+          parent.find('li.active').removeClass('active');
+          parent_li.addClass('active');
+          //Fix the layout in case the sidebar stretches over the height of the window
+          _this.layout.fix();
+          //折叠时，一级菜单样式
+          if($('body').hasClass('sidebar-collapse')){
+            var rootLi=$this.closest("ul.treeview-level-1").parents('li').first();
+            rootLi.siblings('li.active').removeClass('active');
+            rootLi.addClass("active");
+          }
         }
         //if this isn't a link, prevent the page from being redirected
-        if (checkElement.is('.treeview-menu')) {
+        if (checkElement.is('.treeview-menu') || !hasSonTreeMenu) {
           e.preventDefault();
         }
       });

@@ -181,4 +181,8 @@ module.exports = function (grunt) {
 
   // The default task (running "grunt" in console) is "watch"
   grunt.registerTask('default', ['watch']);
+  // 开发环境
+  grunt.registerTask('lessDev', ['less:development']);
+  // 线上环境
+  grunt.registerTask('lessPro', ['less:production']);
 };
