@@ -3,6 +3,7 @@
 *.zip
 .idea
 .sass-cache/
+test/
 /nbproject/
 /nbproject/private/
 /node_modules/

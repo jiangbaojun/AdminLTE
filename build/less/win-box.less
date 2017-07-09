@@ -1,0 +1,57 @@
+/*
+ * windowCtrlBox 最大最小化等控制按钮
+ * ---------------------
+ */
+body.fixed{
+  .win-ctrl-box{
+    .box-origin{
+      position: absolute;
+      top: 103px;
+      right: 30px;
+      .box-item {
+        padding: 5px;
+        font-size: 12px;
+        background: transparent;
+        color: #efefef;
+        cursor: pointer;
+        z-index: 99999;
+      }
+      .box-item:hover{
+        color: #666;
+      }
+    }
+    @media (max-width: @screen-sm-max) {
+      .box-origin {
+        top: 139px;
+      }
+    }
+    @media (max-width: @screen-header-collapse) {
+      .box-origin {
+        top: 189px;
+      }
+    }
+  }
+}
+//全屏、最大化样式
+.win-full{
+  position: absolute;
+  top:0;
+  left: 0;
+  z-index: 888888;
+  padding: 0;
+  margin: 0;
+}
+//最大化box
+.win-max-box{
+  position: absolute;
+  top: 0;
+  right: 10px;
+  z-index: 999999;
+  font-size: 15px;
+  background: transparent;
+  color: #efefef;
+  cursor: pointer;
+  &:hover{
+    color: #666;
+  }
+}

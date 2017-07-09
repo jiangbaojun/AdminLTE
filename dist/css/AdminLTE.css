@@ -593,6 +593,13 @@ a:focus {
 .sidebar-menu .treeview-menu > li > a > .fa-angle-down {
   width: auto;
 }
+.treeview .menu-icon {
+  height: 14px;
+  width: 14px;
+  margin: 3px 6px 0 0;
+  border-radius: 5px;
+  float: left;
+}
 /*
  * Component: Sidebar Mini
  */
@@ -3359,6 +3366,57 @@ table.text-center th {
 }
 .post .user-block {
   margin-bottom: 15px;
+}
+/*
+ * windowCtrlBox 最大最小化等控制按钮
+ * ---------------------
+ */
+body.fixed .win-ctrl-box .box-origin {
+  position: absolute;
+  top: 103px;
+  right: 30px;
+}
+body.fixed .win-ctrl-box .box-origin .box-item {
+  padding: 5px;
+  font-size: 12px;
+  background: transparent;
+  color: #efefef;
+  cursor: pointer;
+  z-index: 99999;
+}
+body.fixed .win-ctrl-box .box-origin .box-item:hover {
+  color: #666;
+}
+@media (max-width: 991px) {
+  body.fixed .win-ctrl-box .box-origin {
+    top: 139px;
+  }
+}
+@media (max-width: 767px) {
+  body.fixed .win-ctrl-box .box-origin {
+    top: 189px;
+  }
+}
+.win-full {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 888888;
+  padding: 0;
+  margin: 0;
+}
+.win-max-box {
+  position: absolute;
+  top: 0;
+  right: 10px;
+  z-index: 999999;
+  font-size: 15px;
+  background: transparent;
+  color: #efefef;
+  cursor: pointer;
+}
+.win-max-box:hover {
+  color: #666;
 }
 /*
  * Social Buttons for Bootstrap

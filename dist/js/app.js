@@ -310,8 +310,12 @@ function _init() {
       var li_a = $('<a/>').attr({"href": this.url || "#", "menuId": this.id})
           .addClass(this.url === '' ? '' : 'menu-item')
           .appendTo(li);
-      // iconCls
-      $('<i/>').addClass(this.iconClass || "").appendTo(li_a);
+      // 菜单前的图标优先使用图片
+      if(this.iconSrc){
+        $("<img/>").attr("src",this.iconSrc).addClass("menu-icon").appendTo(li_a);
+      }else{
+        $('<i/>').addClass(this.iconClass || "").appendTo(li_a);
+      }
       // title
       $('<span class="menu-text" />').text(this.title).appendTo(li_a);
 
@@ -449,7 +453,7 @@ function _init() {
           //Add slimscroll
           $(".sidebar").slimScroll({
             height: ($(window).height() - $(".main-header").height()) + "px",
-            color: "rgba(0,0,0,0.2)",
+            color: "red",
             size: "3px"
           });
         }

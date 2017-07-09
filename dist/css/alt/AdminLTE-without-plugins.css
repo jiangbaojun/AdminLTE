@@ -593,6 +593,13 @@ a:focus {
 .sidebar-menu .treeview-menu > li > a > .fa-angle-down {
   width: auto;
 }
+.treeview .menu-icon {
+  height: 14px;
+  width: 14px;
+  margin: 3px 6px 0 0;
+  border-radius: 5px;
+  float: left;
+}
 /*
  * Component: Sidebar Mini
  */
