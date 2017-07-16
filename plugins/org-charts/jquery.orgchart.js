@@ -40,7 +40,8 @@
       'pan': false,
       'zoom': false,
       'zoominLimit': 7,
-      'zoomoutLimit': 0.5
+      'zoomoutLimit': 0.5,
+      'globalRelationship': '111'
     };
 
     switch (options) {
@@ -132,7 +133,7 @@
           } else {
             $mask.removeClass('hidden');
           }
-          var sourceChart = $chartContainer.addClass('canvasContainer').find('.orgchart:visible').get(0);
+          var sourceChart = $chartContainer.addClass('canvasContainer').find('.orgchart:visible').find("table").get(0);
           var flag = opts.direction === 'l2r' || opts.direction === 'r2l';
           html2canvas(sourceChart, {
             'width': flag ? sourceChart.clientHeight : sourceChart.clientWidth,
@@ -637,23 +638,25 @@
       .append(typeof opts.nodeContent !== 'undefined' ? '<div class="content">' + (nodeData[opts.nodeContent] || '') + '</div>' : '');
     // append 4 direction arrows or expand/collapse buttons
     var flags = nodeData.relationship || '';
+    var globalFlags = opts.globalRelationship;
     if (opts.verticalDepth && (level + 2) > opts.verticalDepth) {
       if ((level + 1) >= opts.verticalDepth && Number(flags.substr(2,1))) {
         var icon = level + 1  >= opts.depth ? 'plus' : 'minus';
         $nodeDiv.append('<i class="toggleBtn fa fa-' + icon + '-square"></i>');
       }
     } else {
-      if (Number(flags.substr(0,1))) {
+      if (Number(flags.substr(0,1)) && Number(globalFlags.substr(0,1))) {
         $nodeDiv.append('<i class="edge verticalEdge topEdge fa"></i>');
       }
-      if(Number(flags.substr(1,1))) {
+      if(Number(flags.substr(1,1)) && Number(globalFlags.substr(1,1))) {
         $nodeDiv.append('<i class="edge horizontalEdge rightEdge fa"></i>' +
           '<i class="edge horizontalEdge leftEdge fa"></i>');
       }
-      if(Number(flags.substr(2,1))) {
-        $nodeDiv.append('<i class="edge verticalEdge bottomEdge fa"></i>')
-          .children('.title').prepend('<i class="fa '+ opts.parentNodeSymbol + ' symbol"></i>');
+      if(Number(flags.substr(2,1)) && Number(globalFlags.substr(2,1))) {
+        $nodeDiv.append('<i class="edge verticalEdge bottomEdge fa"></i>');
       }
+      var userSymbol=nodeData.parentNodeSymbol || opts.parentNodeSymbol;
+      $nodeDiv.find('.title').prepend('<i class="fa '+ userSymbol + ' symbol"></i>');
     }
 
     $nodeDiv.on('mouseenter mouseleave', function(event) {

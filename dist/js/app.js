@@ -259,19 +259,17 @@ function _init() {
    * @param isImmediate 是否即时生效
    */
   $.AdminLTE.extendData = function (AdminLTEOptions,isImmediate) {
-    //上一次menuContainer
-    var oldMenuContainer=$.AdminLTE.options.sideBarMenu.menuContainer;
     //扩展数据
     if (typeof AdminLTEOptions !== "undefined") {
       $.extend(true,
           $.AdminLTE.options,
           AdminLTEOptions);
     }
+
     if(isImmediate){
       // 如果扩展菜单数据，重新渲染菜单
       if(AdminLTEOptions!=null && AdminLTEOptions!==undefined && AdminLTEOptions.sideBarMenu){
         var o = $.AdminLTE.options;
-        oldMenuContainer.html("");
         //create sidebar menus
         $.AdminLTE.createMenus(o.sideBarMenu.menuContainer,o.sideBarMenu.menuRootId,1);
       }
@@ -291,6 +289,10 @@ function _init() {
   $.AdminLTE.createMenus = function (target, id, j) {
     if(target===undefined||target==null){
       return;
+    }
+    if(j==1){
+      target.html("");
+      target.append('<li class="header">主菜单</li>');
     }
     var _this = this;
     var data=$.AdminLTE.options.sideBarMenu.menuData;
@@ -330,6 +332,7 @@ function _init() {
         var arrow=$('<span class="pull-right-container" />').appendTo(li_a);
         $('<i class="fa fa-angle-left pull-right" />').appendTo(arrow);
       }else{
+        li.addClass("direct-menu");
         //最底层（没有子节点）菜单选项添加事件
         li.on('click', function (e) {
           //预览标题

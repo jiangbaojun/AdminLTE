@@ -3,7 +3,7 @@
  */
 $(function(){
     var data = [
-        {id:"A001", parentId: "0", title:"仪表盘",subTitle:"Dashboard Preview", iconSrc:"images/10.png", iconClass: "fa fa-dashboard",url: "", orderNum: 1 },
+        {id:"A001", parentId: "0", title:"仪表盘",subTitle:"Dashboard Preview", iconClass: "fa fa-dashboard",url: "", orderNum: 1 },
         {id:"A002", parentId: "0", title:"窗口部件",subTitle:"Widgets Preview", iconClass: "fa fa-th",url: "../pagesSimple/widgets.html", orderNum: 2 },
         {id:"A003", parentId: "0", title:"图表",subTitle:"Charts Preview", iconClass: "fa fa-pie-chart",url: "", orderNum: 3 },
         {id:"A004", parentId: "0", title:"界面元素",subTitle:"UI Elements Preview", iconClass: "fa fa-laptop",url: "", orderNum: 4 },
@@ -88,17 +88,10 @@ $(function(){
         return false;
     });
 
-    // dock
-    var dockOptions ={
-        align: 'bottom',
-        size: 32,
-        sizeMax: 64,
-        labels: 'tc',
-        coefficient: 1.2,
-        distance: 70
-    };
-    $('#dockMenu').jqDock(dockOptions);
-
+    // 添加标记
+    addTags();
+    //临时处理
+    temp();
 });
 
 function restoreIframe(){
@@ -108,4 +101,23 @@ function restoreIframe(){
     $("#windowCtrlBox .box-restore").hide();
     $("#windowCtrlBox .box-origin").show();
     $(document).unbind('keydown.esc');
+}
+function addTags(){
+   var target = $.AdminLTE.options.sideBarMenu.menuContainer;
+    target.append('<li class="header">自定义标记</li>');
+    target.append('<li class="tag-item"><a href="../pagesSimple/tags/tagPage.html"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>');
+    target.append('<li class="tag-item"><a href="../pagesSimple/tags/tagPage.html"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>');
+    target.append('<li class="tag-item"><a href="../pagesSimple/tags/tagPage.html"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>');
+
+    $(".tag-item").on('click', function (e) {
+        var href=$(this).find("a").attr("href");
+        $.AdminLTE.options.mainContent.html('<iframe marginwidth="0" marginheight="0" id="mainContentIframe" name="mainContentIframe" class="main-content-frame" src="'+href+'"></iframe>');
+        e.preventDefault();
+    });
+}
+
+function temp(){
+    $(".direct-menu").click(function(){
+        $("#windowCtrlBox").show();
+    });
 }

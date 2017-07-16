@@ -15,7 +15,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Font Awesome -->
   <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
   <!-- Ionicons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+  <link rel="stylesheet" href="https://cdn.bootcss.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="../dist/css/AdminLTE.css">
   <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
@@ -34,8 +34,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
   <!--hotkey-->
   <script src="../plugins/jQueryHotket/jquery.hotkeys.js"></script>
-  <!--dock menu-->
-  <script type="text/javascript" src="../plugins/jQdock/jquery.jqDock.min.js"></script>
   <!--full screen-->
   <script src="../plugins/fullscreen/jquery.fullscreen-min.js"></script>
   <!-- Bootstrap 3.3.7 -->
@@ -253,17 +251,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- 主页面 -->
         <section id="mainContent" class="content"></section>
 
-        <div id='dockPage'>
-          <div id='dockMenu'>
-            <img src='images/10.png' title='Pictures' alt='' />
-            <img src='images/11.png' title='Music' alt='' />
-            <img src='images/12.png' title='Videos' alt='' />
-            <img src='images/13.png' title='Uploads' alt='' />
-          </div>
-        </div>
-
         <!--窗口控制条-->
-        <div id="windowCtrlBox" class="win-ctrl-box">
+        <div id="windowCtrlBox" class="win-ctrl-box" style="display: none;">
           <div class="box-origin">
             <i class="box-item maximize fa fa-window-maximize" aria-hidden="true"></i>
             <i class="box-item full fa fa-arrows-alt" aria-hidden="true"></i>
